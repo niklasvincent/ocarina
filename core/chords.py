@@ -7,6 +7,7 @@ def findChords(directory, logging):
     logging.debug( 'Looking for chords in %s', directory )
     for root, dirs, files in os.walk( directory ):
         files = [ f for f in files if not f.endswith( '.pyc' ) ]
+        files = [ f for f in files if f.endswith( '.py' ) ]
         for file in files:
             package = os.path.basename( root )
             name = file.split( '.' )[0]
@@ -25,8 +26,8 @@ def runModule(chord, now, logging):
         try:
             logging.debug( 'Running main method on %s', chord )
             module.main()
-        except:
-            logging.error( 'Failed to run %s', chord )
+        except Exception as e:
+            logging.error( 'Failed to run %s: %s', chord, e )
             pass
 
 def run(directory, now, logging):
