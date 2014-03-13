@@ -13,16 +13,17 @@ class Now:
             'Sunday' 
             ]
 
-    def __init__(self):
+    def __init__(self, year=None, month=None, day=None, weekday=None, 
+            yday=None, hour=None):
         self.date = datetime.datetime.today().timetuple()
-        self.year = self.date[0]
-        self.month = self.date[1]
-        self.day = self.date[2]
-        self.weekday = self.date[6] + 1
-        self.day_name = self.days[self.weekday]
-        self.yday = self.date[7]
+        self.year = self.date[0] if not year else year
+        self.month = self.date[1] if not month else month
+        self.day = self.date[2] if not day else day
+        self.weekday = self.date[6] + 1 if not weekday else weekday
+        self.day_name = self.days[self.weekday -1]
+        self.yday = self.date[7] if not yday else yday
         self.time = datetime.datetime.time( datetime.datetime.now() )
-        self.hour = str( self.time ).split( ':' )[0]
+        self.hour = str( self.time ).split( ':' )[0] if not hour else hour
         self.nbr_of_days_in_month = calendar.monthrange( self.year, self.month )[1]
 
     def isDay(self, day_name):
@@ -62,3 +63,12 @@ class Now:
 
     def isWorkingHours(self):
         return True
+
+    def isClosestBankDay(self, day):
+        if self.day == day and self.isWeekDay():
+            return True
+        if self.day == day - 1 and self.isDay( 'Friday' ):
+            return True
+        if self.day == day - 2 and self.isDay( 'Friday' ):
+            return True
+        return False
