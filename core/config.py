@@ -1,5 +1,6 @@
 import ConfigParser
 import os
+import sys
 
 configurationFile = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../config/main.ini' )
 if not os.path.exists( configurationFile ):                                      
