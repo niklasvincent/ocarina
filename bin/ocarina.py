@@ -41,6 +41,7 @@ sys.path.insert( 0, chordsDirectory )
 
 import core.chords as chords
 from core.now import Now
+import core.config as config
 
 # Check for tweaking
 # TODO Move this into Now
