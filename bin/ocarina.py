@@ -41,9 +41,9 @@ sys.path.insert( 0, chordsDirectory )
 
 import core.chords as chords
 from core.now import Now
-import core.report as report
 
 # Check for tweaking
+# TODO Move this into Now
 if args.tweak:
     try:
         tweak = args.tweak.split()
