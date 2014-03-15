@@ -1,6 +1,7 @@
 import datetime
 import importlib
 import os
+import sys
 
 def findChords(directory, logging):
     chords = []
@@ -9,12 +10,12 @@ def findChords(directory, logging):
         files = [ f for f in files if not f.endswith( '.pyc' ) ]
         files = [ f for f in files if f.endswith( '.py' ) ]
         for file in files:
-            package = os.path.basename( root )
+            logging.debug( 'Adding %s to path', root )
+            sys.path.insert( 0, root )
             name = file.split( '.' )[0]
-            module = "%s.%s" % ( package, name )
             if name != '__init__':
                 logging.debug( 'Found chord %s', file )
-                chords.append( module )
+                chords.append( name )
     return chords
 
 def runModule(chord, now, logging):
