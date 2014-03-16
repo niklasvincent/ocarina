@@ -1,5 +1,5 @@
 import calendar
-import datetime
+from datetime import datetime
 
 class Now:
 
@@ -13,17 +13,22 @@ class Now:
             'Sunday' 
             ]
 
-    def __init__(self, year=None, month=None, day=None, weekday=None, 
-            yday=None, hour=None):
-        self.date = datetime.datetime.today().timetuple()
-        self.year = self.date[0] if not year else year
-        self.month = self.date[1] if not month else month
-        self.day = self.date[2] if not day else day
-        self.weekday = self.date[6] + 1 if not weekday else weekday
+    def __init__(self, tweak=None):
+        self.time = datetime.now().timetuple()
+        if tweak is not None:
+            try:
+                fmt = '%Y-%m-%d %H:%M:%S'
+                self.time = datetime.strptime( tweak, fmt ).timetuple()
+            except:
+                pass
+
+        self.year = self.time.tm_year
+        self.month = self.time.tm_mon
+        self.day = self.time.tm_mday
+        self.weekday = self.time.tm_wday + 1
         self.day_name = self.days[self.weekday -1]
-        self.yday = self.date[7] if not yday else yday
-        self.time = datetime.datetime.time( datetime.datetime.now() )
-        self.hour = str( self.time ).split( ':' )[0] if not hour else hour
+        self.yday = self.time.tm_yday
+        self.hour = self.time.tm_hour
         self.nbr_of_days_in_month = calendar.monthrange( self.year, self.month )[1]
 
     def isDay(self, day_name):

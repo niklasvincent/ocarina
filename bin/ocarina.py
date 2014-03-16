@@ -55,23 +55,5 @@ sys.path.insert( 0, chordsDirectory )
 import core.chords as chords
 from core.now import Now
 
-# Check for tweaking
-# TODO Move this into Now
-if args.tweak:
-    try:
-        tweak = args.tweak.split()
-        date = tweak[0].split( '-' )
-        year = int( date[0] )
-        month = int( date[1] )
-        day = int( date[2] )
-        hour = int( tweak[1].split( ':' )[0] )
-        d = datetime.date( year, month, day )
-        weekday = int( d.strftime( '%w' ) )
-        now = Now( year=year, month=month, day=day, hour=hour, weekday=weekday )
-        logging.debug( 'Applied tweak' )
-    except Exception as e:
-        logging.error( 'Could not parse tweak: %s, %s', args.tweak, e )
-else:
-    now = Now()
-
+now = Now( args.tweak )
 chords.run( chordsDirectory, now, logging )
