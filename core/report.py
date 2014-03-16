@@ -3,8 +3,15 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import time
+import warnings
 
-import pushnotify
+# This is an optional dependency
+try:
+    import pushnotify
+    pushnotifyAvailable = True
+except ImportError as e:
+    pushnotifyAvailable = False
+    pass
 
 def sendMail(recipients, subject, body):
     if not isinstance( recipients, list ):
@@ -23,8 +30,11 @@ def sendMail(recipients, subject, body):
             "content-type: text/html" ] )
         content = headers + "\r\n\r\n" + body
         session.sendmail( conf.get( 'gmail', 'from' ), recipient, content )
-    
+
 def sendNotification(application, desc, event):
+    if not pushnotifyAvailable:
+        warnings.warn( 'Pushnotify is required for sending push notifications' )
+        return
     client = pushnotify.get_client('nma', application=application )
     client.add_key( conf.get( 'notifymyandroid', 'api_key' ) )
     try:
