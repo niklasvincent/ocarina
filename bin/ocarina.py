@@ -17,6 +17,7 @@ root.addHandler( ch )
 args_parser = argparse.ArgumentParser()
 args_parser.add_argument( "--debug", help="Increase output verbosity", action="store_true" )
 args_parser.add_argument( "--tweak", help="Set time and date to tweaked value" )
+args_parser.add_argument( "--chords", help="Directory to look for scripts in" )
 args = args_parser.parse_args()
 
  # Adjust logging to desired verbosity
@@ -35,13 +36,24 @@ for path in [ '../core', '../lib', '..' ]:
     path = os.path.abspath( os.path.join( currentDirectory, path ) )
     sys.path.insert( 0, path )
 
-# Where the chords are kept
-chordsDirectory = os.path.abspath( os.path.join( currentDirectory, '../chords' ) )
+# Load configuration
+from core.config import config as conf
+
+# Where are the chords kept?
+if args.chords:
+    if os.path.isdir( args.chords ):
+        chordsDirectory = args.chords
+else:
+    try:
+        chordsDirectoryFromConf = conf.get( 'ocarina', 'chords' )
+        if os.path.isdir( chordsDirectoryFromConf ):
+            chordsDirectory = chordsDirectoryFromConf
+    except:
+        chordsDirectory = os.path.abspath( os.path.join( currentDirectory, '../chords' ) )
 sys.path.insert( 0, chordsDirectory )
 
 import core.chords as chords
 from core.now import Now
-import core.config as config
 
 # Check for tweaking
 # TODO Move this into Now
