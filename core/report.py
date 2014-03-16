@@ -32,7 +32,7 @@ def sendNotification(application, desc, event):
     except:
         pass
 
-def sendToGrapite(path, value):
+def sendToGraphite(path, value):
     message = '%s %s %d\n' % ( path, value, int( time.time() ) )
     sock = socket.socket()
     graphite_address = ( conf.get( 'graphite', 'server' ), 
