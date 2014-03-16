@@ -16,20 +16,20 @@ except ImportError as e:
 def sendMail(recipients, subject, body):
     if not isinstance( recipients, list ):
         recipients = [ recipients ]
-    session = smtplib.SMTP( conf.get( 'gmail', 'server' ), 
-            conf.getint( 'gmail', 'port' ) )
+    session = smtplib.SMTP( conf.get( 'email', 'server' ), 
+            conf.getint( 'email', 'port' ) )
     session.ehlo()
     session.starttls()
-    session.login( conf.get( 'gmail', 'username' ),
-            conf.get( 'gmail', 'password' ) )
+    session.login( conf.get( 'email', 'username' ),
+            conf.get( 'email', 'password' ) )
     for recipient in recipients:
-        headers = "\r\n".join( [ "from: " + conf.get( 'gmail', 'from' ),
+        headers = "\r\n".join( [ "from: " + conf.get( 'email', 'from' ),
             "subject: " + subject,
             "to: " + recipient,
             "mime-version: 1.0",
             "content-type: text/html" ] )
         content = headers + "\r\n\r\n" + body
-        session.sendmail( conf.get( 'gmail', 'from' ), recipient, content )
+        session.sendmail( conf.get( 'email', 'from' ), recipient, content )
 
 def sendNotification(application, desc, event):
     if not pushnotifyAvailable:
