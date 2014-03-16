@@ -11,7 +11,7 @@ Optionally [pushnotify](https://pypi.python.org/pypi/pushnotify/0.5.1) is requir
 
 ### Installation
 
-    git clone git@github.com:nlindblad/ocarina.git
+    git clone https://github.com/nlindblad/ocarina.git
     cd ocarina
     cp config/main-example.ini config/main.ini
 
