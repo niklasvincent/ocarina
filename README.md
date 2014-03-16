@@ -5,9 +5,19 @@ Drop in script scheduling for Python.
 
 ### Dependencies
 
-Python standard libraries used as much as possible. Developed using Python 2.7.6.
+Only uses Python standard libraries. Developed using Python 2.7.6.
 
 Optionally [pushnotify](https://pypi.python.org/pypi/pushnotify/0.5.1) is required for push notifications.
+
+### Installation
+
+    git clone git@github.com:nlindblad/ocarina.git
+    cd ocarina
+    cp config/main-example.ini config/main.ini
+
+Edit ```config/main.ini```. Add the following crontab:
+
+    0 * * * * bin/ocarina.py
 
 ### What is it?
 
@@ -100,3 +110,7 @@ Uses the built-in smtplib to send HTML e-mails.
 [Graphite](http://graphite.wikidot.com/) is a highly scalable metrics data store that supports graphing and time series analysis.
 
     core.report.sendToGraphite(path, value)
+
+### License
+
+Licensed under the [MIT License](http://opensource.org/licenses/MIT), see MIT-LICENSE.txt.
