@@ -2,6 +2,7 @@ from config import config as conf
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+import socket
 import time
 import warnings
 
@@ -46,7 +47,7 @@ def sendToGraphite(path, value):
     message = '%s %s %d\n' % ( path, value, int( time.time() ) )
     sock = socket.socket()
     graphite_address = ( conf.get( 'graphite', 'server' ), 
-            conf.get( 'graphite', 'port' ) )
+            int( conf.get( 'graphite', 'port' ) ) )
     sock.connect( graphite_address )
     sock.sendall( message )
     sock.close()
