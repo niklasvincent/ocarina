@@ -2,6 +2,9 @@ import datetime
 import importlib
 import os
 import sys
+import time
+
+from core.capturing import Capturing
 
 def findChords(directory, logging):
     chords = []
@@ -17,6 +20,18 @@ def findChords(directory, logging):
                 logging.debug( 'Found chord %s', file )
                 chords.append( name )
     return chords
+
+def execute(function):
+    if sys.platform == 'win32':
+        timer = time.clock
+    else:
+        timer = time.time
+    t0 = timer()
+    with Capturing() as output:
+        function()
+    # Convert to milliseconds
+    elapsed = ( timer() - t0 ) * 1000
+    return ( elapsed, output )
 
 def runModule(chord, now, logging):
     try:
@@ -39,7 +54,8 @@ def runModule(chord, now, logging):
     if shouldRun:
         try:
             logging.debug( 'Running main method on %s', chord )
-            module.main()
+            executionTime, output = execute( module.main )
+            logging.debug( 'Ran main method on %s in %f ms', chord, executionTime )
         except Exception as e:
             logging.error( 'Failed to run %s: %s', chord, e )
             pass
