@@ -10,3 +10,6 @@ class Capturing(list):
     def __exit__(self, *args):
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
+
+    def __str__(self):
+        return "\n".join( self )

@@ -27,6 +27,12 @@ from core.config import config as conf
 import core.log as log
 logging = log.getLogger( args.debug )
 
+# Set up database
+import core.database
+databaseFromConf = conf.get( 'ocarina', 'database' )
+databaseFile = 'results.db' if databaseFromConf is None else databaseFromConf
+db = core.database.getDatabase( databaseFile )
+
 logging.debug( 'Using Python %s', platform.python_version() )
 
 # Where are the chords kept?

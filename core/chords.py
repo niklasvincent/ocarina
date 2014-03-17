@@ -4,7 +4,11 @@ import os
 import sys
 import time
 
-from core.capturing import Capturing
+from capturing import Capturing
+from status import Status
+
+import database
+db = database.getDatabase()
 
 def findChords(directory, logging):
     chords = []
@@ -52,13 +56,21 @@ def runModule(chord, now, logging):
                 chord )
         shouldRun = True
     if shouldRun:
+        start_time = int( time.time() )
+        status = Status.FAIL
         try:
             logging.debug( 'Running main method on %s', chord )
             executionTime, output = execute( module.main )
             logging.debug( 'Ran main method on %s in %f ms', chord, executionTime )
+            status = Status.SUCCESS
         except Exception as e:
+            # TODO Should be possible to measure and capture for failed runs
+            executionTime = 0.0
+            output = ''
             logging.error( 'Failed to run %s: %s', chord, e )
             pass
+        db.recordExecution( start_time, chord, executionTime, 
+                status, str( output ) )
 
 def run(directory, now, logging):
     chords = findChords( directory, logging )
