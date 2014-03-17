@@ -23,13 +23,19 @@ def runModule(chord, now, logging):
         module = importlib.import_module( chord )
     except Exception as e:
         logging.warn( 'Could not import %s, %s', chord, e )
+        return
     logging.debug( 'Considering whether to run %s', chord )
-    try:
-        shouldRun = module.shouldRun( now )
-    except Exception as e:
-        shouldRun = False
-        logging.warn( 'Could not run shouldRun() on %s, %s', chord, e )
-    logging.debug( 'shouldRun() returned %s', shouldRun )
+    if hasattr( module, 'shouldRun' ):
+        try:
+            shouldRun = module.shouldRun( now )
+        except Exception as e:
+            shouldRun = False
+            logging.warn( 'Could not run shouldRun() on %s, %s', chord, e )
+        logging.debug( 'shouldRun() returned %s', shouldRun )
+    else:
+        logging.debug( 'No shouldRun() found on %s, assuming it should run always',
+                chord )
+        shouldRun = True
     if shouldRun:
         try:
             logging.debug( 'Running main method on %s', chord )
