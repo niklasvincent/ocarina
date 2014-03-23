@@ -29,8 +29,15 @@ logging = log.getLogger( args.debug )
 
 # Set up database
 import core.database
-databaseFromConf = conf.get( 'ocarina', 'database' )
-databaseFile = 'results.db' if databaseFromConf is None else databaseFromConf
+try:
+    databaseFromConf = conf.get( 'ocarina', 'database' )
+except:
+    databaseFromConf = None
+if databaseFromConf is None:
+    databaseFile = os.path.abspath( os.path.join( 
+    currentDirectory, '../results.db' ) )
+else:
+    databaseFile = databaseFromConf
 db = core.database.getDatabase( databaseFile )
 
 logging.debug( 'Using Python %s', platform.python_version() )
