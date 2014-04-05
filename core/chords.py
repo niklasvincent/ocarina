@@ -31,11 +31,15 @@ def execute(function):
     else:
         timer = time.time
     t0 = timer()
+    error = None
     with Capturing() as output:
-        function()
+        try:
+            function()
+        except Exception as e:
+            error = e
     # Convert to milliseconds
     elapsed = ( timer() - t0 ) * 1000
-    return ( elapsed, output )
+    return ( elapsed, output, error )
 
 def runModule(chord, now, logging):
     try:
@@ -58,17 +62,14 @@ def runModule(chord, now, logging):
     if shouldRun:
         start_time = int( time.time() )
         status = Status.FAIL
-        try:
-            logging.debug( 'Running main method on %s', chord )
-            executionTime, output = execute( module.main )
-            logging.debug( 'Ran main method on %s in %f ms', chord, executionTime )
+        logging.debug( 'Running main method on %s', chord )
+        executionTime, output, error = execute( module.main )
+        logging.debug( 'Ran main method on %s in %f ms', chord, executionTime )
+        if error is None:
             status = Status.SUCCESS
-        except Exception as e:
-            # TODO Should be possible to measure and capture for failed runs
-            executionTime = 0.0
-            output = ''
-            logging.error( 'Failed to run %s: %s', chord, e )
-            pass
+        else:
+            logging.error( 'Failed to run %s: %s', chord, error )
+            output = "%s\n%s" % ( output, error )
         db.recordExecution( start_time, chord, executionTime, 
                 status, str( output ) )
 
