@@ -12,6 +12,8 @@ args_parser = argparse.ArgumentParser()
 args_parser.add_argument( "--debug", help="Increase output verbosity", action="store_true" )
 args_parser.add_argument( "--tweak", help="Set time and date to tweaked value" )
 args_parser.add_argument( "--chords", help="Directory to look for scripts in" )
+args_parser.add_argument( "--history", help="List previous chord executions", action="store_true" )
+args_parser.add_argument( "--filter", help="Filter output of --history" )
 args = args_parser.parse_args()
 
 # Add relevant directories to path
@@ -55,8 +57,17 @@ else:
         chordsDirectory = os.path.abspath( os.path.join( currentDirectory, '../chords' ) )
 sys.path.insert( 0, chordsDirectory )
 
-import core.chords as chords
-from core.now import Now
+shouldRunChords = args.history is False
 
-now = Now( args.tweak )
-chords.run( chordsDirectory, now, logging )
+if shouldRunChords:
+    import core.chords as chords
+    from core.now import Now
+
+    now = Now( args.tweak )
+    chords.run( chordsDirectory, now, logging )
+
+if args.history:
+    from core.history import History
+
+    history = History( db )
+    history.listPrevious( args.filter )

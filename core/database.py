@@ -50,5 +50,25 @@ class Database(object):
                     e )
             sys.exit( 5 )
 
+    def getExecutions(self, chord_name=None, status=None):
+        sql = '''SELECT id, time_start, chord_name, execution_time, status, 
+                    output FROM execution'''
+        where = []
+        where_args = []
+        if chord_name is not None:
+            where.append( 'chord_name=?' )
+            where_args.append( chord_name )
+        if status is not None:
+            where.append( 'status=?' )
+            where_args.append( status )
+        sql += ' '.join( where )
+        try:
+            self.cursor.execute( sql, where_args )
+            results = self.cursor.fetchall()
+        except Exception as e:
+            logging.critical( 'Could not retrieve previous executions: %s', e )
+            sys.exit( 6 )
+        return results
+
     def __del__(self):
         self.conn.close()
