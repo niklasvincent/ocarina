@@ -1,7 +1,9 @@
 from cStringIO import StringIO
 import sys
 
+
 class Capturing(list):
+
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = StringIO()
@@ -12,4 +14,4 @@ class Capturing(list):
         sys.stdout = self._stdout
 
     def __str__(self):
-        return "\n".join( self )
+        return "\n".join(self)
