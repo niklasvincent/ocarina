@@ -21,7 +21,7 @@ Edit ```config/main.ini```. Add the following crontab:
 
 ### What is it?
 
-Ocarina (named after the Ocarina of **time**) is a simple way of scheduling Python scripts without having to constantly add and update crontab entries. It also supports scheduling not possible with cron, such as ```isClosestBankDay(day)```.
+Ocarina (named after the Ocarina of **Time**) is a simple way of scheduling Python scripts without having to constantly add and update crontab entries. It also supports scheduling not possible with cron, such as ```isClosestBankDay(day)```.
 
 Instead, the main program ```bin/ocarina.py``` is scheduled to be run every hour through cron:
 
@@ -39,6 +39,21 @@ Each script (or chord) should follow the format:
 
 The above script would run each weekday at 11 AM.
 
+The ``Now`` class implements the following helper methods:
+
+    isDay(day_name)
+    isDaily()
+    isWeekly()
+    isMonthly()
+    isHourly()
+    isWeekDay()
+    isWeekend()
+    isMorning()
+    isMidnight()
+    isEvening()
+    isWorkingHours()
+    isClosestBankDay(day)
+
 ### Why?
 
 During my final semester at universtiy and the following summer, I found myself enjoying tinkering with life stats from various sources such as Stackoverflow, Good Reads, Twitter, LinkedIn and [reverse engineering the API for Jawbone Up](https://niklaslindblad.se/2013/07/jawbone-up-api-updates/).
@@ -47,7 +62,7 @@ A common pattern emerged for the type of scripts:
 
  * Find a good interval (bi-daily, hourly, weekly, etc.)
  * Retrieve data and perform some post-processing
- * Act on the data (e.g. store it or report it
+ * Act on the data (e.g. store it or report it)
 
 My crontab quickly became cluttered and I felt the need for something simpler that was also easier to debug and maintain.
 
