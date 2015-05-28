@@ -49,6 +49,8 @@ def main():
                              help="Set time and date to tweaked value")
     args_parser.add_argument("--chords",
                              help="Directory to look for scripts in")
+    args_parser.add_argument( "--history",
+                            help="List previous chord executions" )
     args = args_parser.parse_args()
 
     # Set up logging
@@ -60,7 +62,7 @@ def main():
     from core.config import config as conf
 
     # Set up database
-    setup_db()
+    db = setup_db()
 
     # Where are the chords kept?
     if args.chords:
@@ -76,11 +78,19 @@ def main():
                 os.path.join(currentDirectory, '../chords'))
     sys.path.insert(0, chordsDirectory)
 
-    import core.chords as chords
-    from core.now import Now
+    shouldRunChords = not args.history
 
-    now = Now(args.tweak)
-    chords.run(chordsDirectory, now, logging)
+    if shouldRunChords:
+        import core.chords as chords
+        from core.now import Now
+        now = Now(args.tweak)
+        chords.run(chordsDirectory, now, logging)
+
+    if args.history:
+        from core.history import History
+
+        history = History( db )
+        history.listPrevious( args.history )
 
 
 if __name__ == "__main__":
