@@ -55,10 +55,10 @@ class Database(object):
                     output FROM execution'''
         where = []
         where_args = []
-        if chord_name is not None:
+        if chord_name:
             where.append( 'chord_name=?' )
             where_args.append( chord_name )
-        if status is not None:
+        if status:
             where.append( 'status=?' )
             where_args.append( status )
         sql += ' '.join( where )
