@@ -16,11 +16,12 @@ class History(object):
         previous = self.db.getExecutions()
         rows = []
         for p in previous:
-            row = [  p[0],
-                    datetime.datetime.utcfromtimestamp( p[1] ),
-                    p[2],
-                    p[3],
-                    p[4]
+            identifier, time_start, chord_name, execution_time, status, output = p
+            row = [ identifier,
+                    datetime.datetime.utcfromtimestamp( time_start ),
+                    chord_name,
+                    execution_time,
+                    status
                     ]
             row = [ str( i ) for i in row ]
             rows.append( row )
