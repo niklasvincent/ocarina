@@ -50,9 +50,7 @@ def main():
     args_parser.add_argument("--chords",
                              help="Directory to look for scripts in")
     args_parser.add_argument( "--history",
-                            help="List previous chord executions", action="store_true" )
-    args_parser.add_argument( "--filter",
-                            help="Filter output of --history" )
+                            help="List previous chord executions" )
     args = args_parser.parse_args()
 
     # Set up logging
@@ -92,7 +90,7 @@ def main():
         from core.history import History
 
         history = History( db )
-        history.listPrevious( args.filter )
+        history.listPrevious( args.history )
 
 
 if __name__ == "__main__":

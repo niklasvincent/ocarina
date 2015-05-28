@@ -12,8 +12,8 @@ class History(object):
     def _interpretFilter(self, filter):
         parts = filter.split( ',' )
 
-    def listPrevious(self, filter):
-        previous = self.db.getExecutions()
+    def listPrevious(self, chord_name):
+        previous = self.db.getExecutions( chord_name = chord_name )
         rows = []
         for p in previous:
             identifier, time_start, chord_name, execution_time, status, output = p
