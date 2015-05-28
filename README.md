@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nlindblad/ocarina.svg?branch=master)](https://travis-ci.org/nlindblad/ocarina)
+
 ocarina
 =====
 
