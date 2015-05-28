@@ -40,37 +40,35 @@ class Database(object):
                 logging.critical('Could not create table %s: %s', table, e)
                 sys.exit(4)
 
+    def _executeQuery(self, sql, bindings = list(), return_result = True, commit = True):
+        logging.debug('Executing SQL: %s', sql)
+        try:
+            self.cursor.execute( sql, bindings )
+            if commit:
+                logging.debug('Commiting to database')
+                self.conn.commit()
+            if return_result:
+                return self.cursor.fetchall()
+        except Exception as e:
+            logging.critical('Could not execute query: %s', e)
+            sys.exit( 7 )
+
     def recordExecution(self, start_time, chord_name, execution_time, status,
                         output):
         row = [start_time, chord_name, execution_time, status, output]
         sql = '''INSERT INTO execution VALUES( NULL, ?, ?, ?, ?, ?)'''
-        try:
-            self.cursor.execute(sql, row)
-            self.conn.commit()
-        except Exception as e:
-            logging.critical(
-                'Could not record execution of %s: %s', chord_name,
-                e)
-            sys.exit(5)
+        self._executeQuery(sql, row)
 
-    def getExecutions(self, chord_name=None, status=None):
+    def getExecutions(self, chord_name=None):
         sql = '''SELECT id, time_start, chord_name, execution_time, status, 
                     output FROM execution'''
-        where = []
+        where = [' WHERE']
         where_args = []
         if chord_name:
             where.append( 'chord_name=?' )
             where_args.append( chord_name )
-        if status:
-            where.append( 'status=?' )
-            where_args.append( status )
         sql += ' '.join( where )
-        try:
-            self.cursor.execute( sql, where_args )
-            results = self.cursor.fetchall()
-        except Exception as e:
-            logging.critical( 'Could not retrieve previous executions: %s', e )
-            sys.exit( 6 )
+        results = self._executeQuery(sql, where_args, return_result = True)
         return results
 
     def __del__(self):
