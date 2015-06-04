@@ -42,7 +42,7 @@ class Now:
 
     def isWeekly(self):
         """ Run sunday at 11 PM """
-        return (self.wekday == 7 and self.hour == 23)
+        return (self.weekday == 7 and self.hour == 23)
 
     def isMonthly(self):
         """ Run on at 11 PM last day of month """
