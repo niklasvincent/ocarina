@@ -1,10 +1,10 @@
 import sys
 import sqlite3
 
-from . import log
+import log
 logging = log.getLogger()
 
-from .model import model
+from model import model
 
 databaseInstance = None
 

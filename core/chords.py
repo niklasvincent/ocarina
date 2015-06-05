@@ -4,26 +4,27 @@ import os
 import sys
 import time
 
-from .capturing import Capturing
-from .status import Status
+from collections import namedtuple
 
-from . import database
+from capturing import Capturing
+from status import Status
+
+import database
 db = database.getDatabase()
 
+Chord = namedtuple('Chord', ['path', 'name'])
 
 def findChords(directory, logging):
     chords = []
     logging.debug('Looking for chords in %s', directory)
-    for root, dirs, files in os.walk(directory):
+    for path, dirs, files in os.walk(directory):
         files = [f for f in files if not f.endswith('.pyc')]
         files = [f for f in files if f.endswith('.py')]
         for file in files:
-            logging.debug('Adding %s to path', root)
-            sys.path.insert(0, root)
             name = file.split('.')[0]
             if name != '__init__':
                 logging.debug('Found chord %s', file)
-                chords.append(name)
+                chords.append(Chord(path, name))
     return chords
 
 
@@ -43,38 +44,44 @@ def execute(function):
     elapsed = (timer() - t0) * 1000
     return (elapsed, output, error)
 
+def shouldRun(module, now, logging):
+    run = False
+    if hasattr(module, 'shouldRun'):
+         try:
+              run = module.shouldRun(now)
+         except Exception as e:
+             logging.warn('Could not run shouldRun() on %s, %s', module.__name__, e)
+         logging.debug('shouldRun() returned %s', run)
+    else:
+         logging.debug(
+             'No shouldRun() found on %s, assuming it should run always',
+             module.__name__)
+         run = True 
+    return run
 
 def runModule(chord, now, logging):
     try:
-        module = importlib.import_module(chord)
+        logging.debug('Adding %s to path', chord.path)
+        sys.path.insert(0, chord.path)
+        module = importlib.import_module(chord.name)
     except Exception as e:
-        logging.warn('Could not import %s, %s', chord, e)
+        logging.warn('Could not import %s: %s', chord.name, e)
         return
-    logging.debug('Considering whether to run %s', chord)
-    if hasattr(module, 'shouldRun'):
-        try:
-            shouldRun = module.shouldRun(now)
-        except Exception as e:
-            shouldRun = False
-            logging.warn('Could not run shouldRun() on %s, %s', chord, e)
-        logging.debug('shouldRun() returned %s', shouldRun)
-    else:
-        logging.debug(
-            'No shouldRun() found on %s, assuming it should run always',
-            chord)
-        shouldRun = True
-    if shouldRun:
+    logging.debug('Considering whether to run %s', chord.name)
+    if shouldRun(module, now, logging):
         start_time = int(time.time())
         status = Status.FAIL
-        logging.debug('Running main method on %s', chord)
+        logging.debug('Running main method on %s', chord.name)
         executionTime, output, error = execute(module.main)
-        logging.debug('Ran main method on %s in %f ms', chord, executionTime)
+        logging.debug('Ran main method on %s in %f ms', chord.name, executionTime)
         if error is None:
             status = Status.SUCCESS
         else:
-            logging.error('Failed to run %s: %s', chord, error)
+            logging.error('Failed to run %s: %s', chord.name, error)
             output = "%s\n%s" % (output, error)
-        db.recordExecution(start_time, chord, executionTime,
+        logging.debug('Removing %s from path', sys.path[0])
+        del sys.path[0]
+        db.recordExecution(start_time, chord.name, executionTime,
                            status, str(output))
 
 
