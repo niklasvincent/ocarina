@@ -12,7 +12,7 @@ from status import Status
 from virtualenvironment import IsolatedVirtualEnvironment
 
 import database
-db = database.getDatabase()
+db = database.getInstance()
 
 Chord = namedtuple('Chord', ['path', 'name'])
 
