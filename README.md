@@ -7,7 +7,19 @@ Drop in script scheduling for Python.
 
 ### Dependencies
 
-Only uses Python standard libraries. Developed using Python 2.7.6.
+Developed using Python 2.7.6.
+
+See `requirements.txt` for all dependencies or install them all using:
+
+    $ pip install -r requirements.txt
+
+#### virtualenv-api
+
+Used to manage the isolated virtual Python environments for each scheduled script.
+
+    $ pip install virtualenv-api
+
+#### Optional: pushnotify
 
 Optionally [pushnotify](https://pypi.python.org/pypi/pushnotify/0.5.1) is required for push notifications.
 
