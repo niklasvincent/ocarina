@@ -18,9 +18,7 @@ class TestRequiresVirtualEnv(unittest.TestCase):
 			mockings.createModule(
 				"WithRequirements",
 				"requirements = ['oauth2']\ndef main():\n\tpass"
-			),
-			now,
-			mockings.getLogger()
+			)
 		))
 
 	def testModuleWithoutRequirements(self):
@@ -29,9 +27,7 @@ class TestRequiresVirtualEnv(unittest.TestCase):
 			mockings.createModule(
 				"WithRequirements",
 				"def main():\n\tpass"
-			),
-			now,
-			mockings.getLogger()
+			)
 		))
 
 

@@ -59,7 +59,7 @@ def shouldRun(module, now, logging):
          run = True 
     return run
 
-def requiresVirtualEnv(module, now, logging):
+def requiresVirtualEnv(module):
     return hasattr(module, 'requirements') and isinstance(module.requirements, (list, tuple))
 
 def runModule(chord, now, logging):
