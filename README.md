@@ -5,34 +5,6 @@ ocarina
 
 Drop in script scheduling for Python.
 
-### Dependencies
-
-Developed using Python 2.7.6.
-
-See `requirements.txt` for all dependencies or install them all using:
-
-    $ pip install -r requirements.txt
-
-#### virtualenv-api
-
-Used to manage the isolated virtual Python environments for each scheduled script.
-
-    $ pip install virtualenv-api
-
-#### Optional: pushnotify
-
-Optionally [pushnotify](https://pypi.python.org/pypi/pushnotify/0.5.1) is required for push notifications.
-
-### Installation
-
-    git clone https://github.com/nlindblad/ocarina.git
-    cd ocarina
-    cp config/main-example.ini config/main.ini
-
-Edit ```config/main.ini```. Add the following crontab:
-
-    0 * * * * bin/ocarina.py
-
 ### What is it?
 
 Ocarina (named after the Ocarina of **Time**) is a simple way of scheduling Python scripts without having to constantly add and update crontab entries. It also supports scheduling not possible with cron, such as ```isClosestBankDay(day)```.
@@ -68,9 +40,28 @@ The ``Now`` class implements the following helper methods:
     isWorkingHours()
     isClosestBankDay(day)
 
+#### Isolated virtual environments
+
+Each chord (script) can define a list of requirements using [Pip package syntax](https://pip.pypa.io/en/latest/user_guide.html#installing-packages).
+
+For example, if you want to run a script which requires `dnspython` and `boto`, just define your chord as:
+
+    requirements = ["boto", "dnspython"]
+
+    def shouldRun(now):
+        return now.isWeekDay() and now.hour == 11
+
+    def main():
+        global boto
+        import boto
+        global dns
+        import dns
+
+The dependencies will get installed in a unique isolated virtual environment and your chord will have access to them straight away.
+
 ### Why?
 
-During my final semester at universtiy and the following summer, I found myself enjoying tinkering with life stats from various sources such as Stackoverflow, Good Reads, Twitter, LinkedIn and [reverse engineering the API for Jawbone Up](https://niklaslindblad.se/2013/07/jawbone-up-api-updates/).
+During my final semester at universtiy and the following summer, I found myself tinkering with life stats from various sources such as Stackoverflow, Good Reads, Twitter, LinkedIn and [reverse engineering the API for Jawbone Up](https://niklaslindblad.se/2013/07/jawbone-up-api-updates/).
 
 A common pattern emerged for the type of scripts:
 
@@ -90,7 +81,7 @@ If you need finer control over at what time your scripts are running, Ocarina mi
 
 ### Debugging
 
-The option ```--debug``` makes Ocarina. Consider our test script above, placed in ```chords/test.py```:
+The option ```--debug``` makes Ocarina log all of its internal decision making. Consider our test script above, placed in ```chords/test.py```:
 
     ./bin/ocarina.py --debug
 
@@ -120,6 +111,34 @@ would output:
     2014-03-16 13:46:33,647 - ocarina - DEBUG - shouldRun() returned True
     2014-03-16 13:46:33,647 - ocarina - DEBUG - Running main method on test
     It is 11 AM on a week day!
+
+### Dependencies
+
+Developed using Python 2.7.6.
+
+See `requirements.txt` for all dependencies or install them all using:
+
+    $ pip install -r requirements.txt
+
+#### virtualenv-api
+
+Used to manage the isolated virtual Python environments for each scheduled script.
+
+    $ pip install virtualenv-api
+
+#### Optional: pushnotify
+
+Optionally [pushnotify](https://pypi.python.org/pypi/pushnotify/0.5.1) is required for push notifications.
+
+### Installation
+
+    git clone https://github.com/nlindblad/ocarina.git
+    cd ocarina
+    cp config/main-example.ini config/main.ini
+
+Edit ```config/main.ini```. Add the following crontab:
+
+    0 * * * * bin/ocarina.py
 
 ### Built-in notifications targets
 
