@@ -32,7 +32,7 @@ def setup_db():
                                        currentDirectory, '../results.db'))
     else:
         databaseFile = databaseFromConf
-    db = core.database.getDatabase(databaseFile)
+    db = core.database.getInstance(databaseFile, createModel = True)
     return db
 
 
