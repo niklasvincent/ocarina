@@ -78,13 +78,22 @@ def main():
                 os.path.join(currentDirectory, '../chords'))
     sys.path.insert(0, chordsDirectory)
 
+    # Where are the virtual environments kept?
+    try:
+        virtualEnvDirectoryFromConf = conf.get('ocarina', 'virtualenv')
+        if os.path.isdir(virtualEnvDirectoryFromConf):
+            virtualEnvDirectory = virtualEnvDirectoryFromConf
+    except:
+        virtualEnvDirectory = os.path.abspath(
+            os.path.join(currentDirectory, '../.virtualenv'))
+
     shouldRunChords = not args.history
 
     if shouldRunChords:
         import core.chords as chords
         from core.now import Now
         now = Now(args.tweak)
-        chords.run(chordsDirectory, now, logging)
+        chords.run(chordsDirectory, virtualEnvDirectory, now, logging)
 
     if args.history:
         from core.history import History
