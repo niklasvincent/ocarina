@@ -70,7 +70,11 @@ class Database(object):
         sql = '''SELECT value FROM state WHERE key = ?'''
         result = self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
         if result:
-            return pickle.loads(str(result[0][0]))
+            result = str(result[0][0])
+            try:
+                return pickle.loads(result)
+            except:
+                return result
         return None
 
     def set(self, key, value):
