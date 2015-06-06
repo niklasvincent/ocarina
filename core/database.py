@@ -2,6 +2,8 @@ import inspect
 import sys
 import sqlite3
 
+import cPickle as pickle
+
 import log
 logging = log.getLogger()
 
@@ -68,10 +70,11 @@ class Database(object):
         sql = '''SELECT value FROM state WHERE key = ?'''
         result = self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
         if result:
-            return result[0][0]
+            return pickle.loads(str(result[0][0]))
         return None
 
     def set(self, key, value):
+        value = pickle.dumps(value)
         sql = '''INSERT OR REPLACE INTO state ("key", "value") VALUES (?, ?)'''
         self._executeQuery(
             sql,
