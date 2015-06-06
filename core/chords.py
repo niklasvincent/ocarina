@@ -9,6 +9,7 @@ from collections import namedtuple
 
 from capturing import Capturing
 from status import Status
+from virtualenvironment import IsolatedVirtualEnvironment
 
 import database
 db = database.getDatabase()
@@ -68,7 +69,16 @@ def virtualEnvSignature(requirements):
     hasher.update(",".join(sorted(set(requirements))))
     return hasher.hexdigest()
 
-def runModule(chord, now, logging):
+def virtualEnvForModule(module, virtualEnvDirectory, logging):
+    logging.debug('Checking if %s needs to run in a virtualenv', module.__name__)
+    virtualEnv = None
+    if requiresVirtualEnv(module):
+        logging.debug('%s requires virtualenv', module.__name__)
+        virtualEnv = os.path.join(virtualEnvDirectory, virtualEnvSignature(module.requirements))
+    logging.debug('virtualenv for %s is %s', module.__name__, virtualEnv)
+    return virtualEnv
+
+def runModule(chord, virtualEnvDirectory, now, logging):
     try:
         logging.debug('Adding %s to path', chord.path)
         sys.path.insert(0, chord.path)
@@ -78,10 +88,12 @@ def runModule(chord, now, logging):
         return
     logging.debug('Considering whether to run %s', chord.name)
     if shouldRun(module, now, logging):
+        virtualEnv = virtualEnvForModule(module, virtualEnvDirectory, logging)
         start_time = int(time.time())
         status = Status.FAIL
         logging.debug('Running main method on %s', chord.name)
-        executionTime, output, error = execute(module.main)
+        with IsolatedVirtualEnvironment(module, virtualEnv, logging):
+            executionTime, output, error = execute(module.main)
         logging.debug('Ran main method on %s in %f ms', chord.name, executionTime)
         if error is None:
             status = Status.SUCCESS
@@ -94,7 +106,7 @@ def runModule(chord, now, logging):
                            status, str(output))
 
 
-def run(directory, now, logging):
+def run(directory, virtualEnvDirectory, now, logging):
     chords = findChords(directory, logging)
     for chord in chords:
-        runModule(chord, now, logging)
+        runModule(chord, virtualEnvDirectory, now, logging)
