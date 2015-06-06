@@ -68,7 +68,7 @@ class Database(object):
         sql = '''SELECT value FROM state WHERE key = ?'''
         result = self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
         if result:
-            return result[0]
+            return result[0][0]
         return None
 
     def set(self, key, value):
