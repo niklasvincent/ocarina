@@ -59,6 +59,9 @@ def shouldRun(module, now, logging):
          run = True 
     return run
 
+def requiresVirtualEnv(module, now, logging):
+    return hasattr(module, 'requirements') and isinstance(module.requirements, (list, tuple))
+
 def runModule(chord, now, logging):
     try:
         logging.debug('Adding %s to path', chord.path)
