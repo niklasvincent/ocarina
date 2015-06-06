@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 import importlib
 import os
 import sys
@@ -61,6 +62,11 @@ def shouldRun(module, now, logging):
 
 def requiresVirtualEnv(module):
     return hasattr(module, 'requirements') and isinstance(module.requirements, (list, tuple))
+
+def virtualEnvSignature(requirements):
+    hasher = hashlib.sha1()
+    hasher.update(",".join(sorted(set(requirements))))
+    return hasher.hexdigest()
 
 def runModule(chord, now, logging):
     try:

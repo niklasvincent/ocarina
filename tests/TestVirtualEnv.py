@@ -30,6 +30,24 @@ class TestRequiresVirtualEnv(unittest.TestCase):
 			)
 		))
 
+	def testVirtualEnvSignature(self):
+		self.assertEquals(
+			chords.virtualEnvSignature(["oauth2", "dnspython", "boto"]),
+			"478af6c3556b9c39a2668fe7fbe567bf77a153d3"
+		)
+
+	def testVirtualEnvSignatureDuplicatesDoNotMatter(self):
+		self.assertEquals(
+			chords.virtualEnvSignature(["dnspython", "oauth2", "boto", "dnspython", "boto"]),
+			"478af6c3556b9c39a2668fe7fbe567bf77a153d3"
+		)
+
+	def testVirtualEnvSignatureOrderDoesNotMatter(self):
+		self.assertEquals(
+			chords.virtualEnvSignature(["dnspython", "boto", "oauth2"]),
+			"478af6c3556b9c39a2668fe7fbe567bf77a153d3"
+		)
+
 
 def main():
     unittest.main()
