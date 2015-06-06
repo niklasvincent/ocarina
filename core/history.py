@@ -21,7 +21,8 @@ class History(object):
                     datetime.datetime.utcfromtimestamp( time_start ),
                     chord_name,
                     execution_time,
-                    status
+                    status,
+                    output
                     ]
             row = [ str( i ) for i in row ]
             rows.append( row )

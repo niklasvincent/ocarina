@@ -66,7 +66,10 @@ class Database(object):
 
     def get(self, key):
         sql = '''SELECT value FROM state WHERE key = ?'''
-        return self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
+        result = self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
+        if result:
+            return result[0]
+        return None
 
     def set(self, key, value):
         sql = '''INSERT OR REPLACE INTO state ("key", "value") VALUES (?, ?)'''
