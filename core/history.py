@@ -17,19 +17,16 @@ class History(object):
         rows = []
         for p in previous:
             identifier, time_start, chord_name, execution_time, status, output = p
+            status = "OK" if status else "FAILED"
             row = [ identifier,
                     datetime.datetime.utcfromtimestamp( time_start ),
                     chord_name,
                     execution_time,
                     status,
-                    output
                     ]
             row = [ str( i ) for i in row ]
-            rows.append( row )
-        self.print_table( rows )
+            row = "| ".join(row)
+            print "-" * len(row)
+            print row
+            print output
 
-    def print_table(self, table):
-        col_width = [max(len(x) for x in col) for col in zip(*table)]
-        for line in table:
-            print "| " + " | ".join("{:{}}".format(x, col_width[i])
-                             for i, x in enumerate(line)) + " |"

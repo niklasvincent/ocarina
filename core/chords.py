@@ -79,6 +79,7 @@ def virtualEnvForModule(module, virtualEnvDirectory, logging):
     return virtualEnv
 
 def runModule(chord, virtualEnvDirectory, now, logging):
+    logging.debug("-" * 60)
     try:
         logging.debug('Adding %s to path', chord.path)
         sys.path.insert(0, chord.path)
