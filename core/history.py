@@ -2,6 +2,7 @@ import datetime
 import sys
 
 import log
+from status import Status
 logging = log.getLogger()
 
 class History(object):
@@ -17,7 +18,7 @@ class History(object):
         rows = []
         for p in previous:
             identifier, time_start, chord_name, execution_time, status, output = p
-            status = "OK" if status else "FAILED"
+            status = "OK" if status is Status.SUCCESS else "FAILED"
             row = [ identifier,
                     datetime.datetime.utcfromtimestamp( time_start ),
                     chord_name,
