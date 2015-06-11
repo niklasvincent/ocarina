@@ -63,12 +63,13 @@ class Database(object):
         mod = inspect.getmodule(frm[0])
         return mod.__name__
 
-    def _constructKeyName(self, key):
-        return '.'.join([self._getChord(), key])
+    def _constructKeyName(self, key, private = True):
+        prefix = self._getChord() + "." if private else ""
+        return "%s%s" % (prefix, key)
 
-    def get(self, key):
+    def get(self, key, private = True):
         sql = '''SELECT value FROM state WHERE key = ?'''
-        result = self._executeQuery(sql, [self._constructKeyName(key)], return_result = True)
+        result = self._executeQuery(sql, [self._constructKeyName(key, private)], return_result = True)
         if result:
             result = str(result[0][0])
             try:
@@ -77,12 +78,12 @@ class Database(object):
                 return result
         return None
 
-    def set(self, key, value):
+    def set(self, key, value, private = True):
         value = pickle.dumps(value)
         sql = '''INSERT OR REPLACE INTO state ("key", "value") VALUES (?, ?)'''
         self._executeQuery(
             sql,
-            [self._constructKeyName(key), value],
+            [self._constructKeyName(key, private), value],
             return_result = False,
             commit = True
         )
