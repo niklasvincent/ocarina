@@ -56,9 +56,9 @@ def shouldRun(module, now, logging):
          logging.debug('shouldRun() returned %s', run)
     else:
          logging.debug(
-             'No shouldRun() found on %s, assuming it should run always',
+             'No shouldRun() found on %s, assuming it is a library',
              module.__name__)
-         run = True 
+         run = False 
     return run
 
 def requiresVirtualEnv(module):

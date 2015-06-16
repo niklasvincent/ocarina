@@ -14,7 +14,7 @@ class TestShouldRun(unittest.TestCase):
 
 	def testModuleWithoutShouldRunMethod(self):
 		now = Now(tweak = "2015-01-01 12:00:00")
-		self.assertTrue(chords.shouldRun(
+		self.assertFalse(chords.shouldRun(
 			mockings.createModule(
 				"WithoutShouldRunMethod",
 				"def main():\n\tpass"
