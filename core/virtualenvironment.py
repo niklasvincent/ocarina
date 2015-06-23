@@ -47,8 +47,8 @@ class IsolatedVirtualEnvironment(object):
                     logging.debug('%s installed in %s', requirement, environmentDirectory)
                 else:
                     logging.debug('%s already in %s', requirement, environmentDirectory)
-            except:
-                logging.error('Could not install dependency %s in %s', requirement, environmentDirectory)
+            except Exception as e:
+                logging.error('Could not install dependency %s in %s: %s', requirement, environmentDirectory, e)
 
     def __enter__(self, *args):
         self.prevOsPath = os.environ['PATH']
