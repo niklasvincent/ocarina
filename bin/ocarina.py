@@ -14,6 +14,7 @@ def setup_path():
     """ Set up path """
     global currentDirectory
     currentDirectory = os.path.dirname(os.path.abspath(__file__))
+    os.environ['OCARINA_PATH'] = os.path.abspath(os.path.join(currentDirectory, '..'))
     for path in ['../core', '../lib', '..']:
         path = os.path.abspath(os.path.join(currentDirectory, path))
         sys.path.insert(0, path)
