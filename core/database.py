@@ -1,4 +1,5 @@
 import inspect
+import os
 import sys
 import sqlite3
 
@@ -14,10 +15,11 @@ databaseInstance = {}
 
 def getInstance(filename='results.db', createModel = False):
     global databaseInstance
-    if databaseInstance.get(filename) is not None:
-        return databaseInstance.get(filename)
-    databaseInstance[filename]= Database(filename, createModel)
-    return databaseInstance[filename]
+    fullFilename = os.path.join(os.environ.get('OCARINA_PATH', ''), filename)
+    if databaseInstance.get(fullFilename) is not None:
+        return databaseInstance.get(fullFilename)
+    databaseInstance[fullFilename]= Database(fullFilename, createModel)
+    return databaseInstance[fullFilename]
 
 
 class Database(object):
